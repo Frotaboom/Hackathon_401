@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { useState, useEffect, useContext} from 'react'
+import { useState } from 'react';
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import { Scheduler, WeekView, Appointments, AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
-import { onSnapshot, collection, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { AuthContext } from '../../auth/AuthContext';
 
 {/*}
 const data1 = [

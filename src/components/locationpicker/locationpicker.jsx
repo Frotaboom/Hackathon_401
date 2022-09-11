@@ -17,7 +17,7 @@ import { db } from "../../firebase";
 import { AuthContext } from "../../auth/AuthContext";
 
 export default function LocationPicker( setData ) {
-  const [state,setState] = useState({building:'ECHA', startTime:'08:00', endTime:'08:00'})
+  const [state,setState] = useState({title:'ECHA', startTime:'08:00', endTime:'08:00'})
   const [checkboxState,setCheckBoxState] = useState({1:0, 2:0, 3:0, 4:0, 5:0})
   const {currentUser} = useContext(AuthContext);
 

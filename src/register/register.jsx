@@ -1,47 +1,45 @@
 import { useContext, useState } from "react";
-import "./login.scss";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import "./register.scss";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Navigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
+import { auth } from "../firebase";
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import LoginIcon from '@mui/icons-material/Login';
-import {Link} from 'react-router-dom'
-import Grid from '@mui/material/Grid';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-export default function Login () {
+export default function Register () {
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("")
+  const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const navitage = useNavigate()
+  const [redirect, setRedirect] = useState(false)
   const {dispatch} = useContext(AuthContext)
-
   const theme = createTheme();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
         dispatch({type:"LOGIN", payload:user})
-        navitage("/")
+        setSuccess(true);
+        setTimeout(() => setRedirect(true), 2000);
       })
-      .catch((error) => {
+      .catch((er) => {
+        setErrorMsg(er.message);
         setError(true);
+        setSuccess(false);
       });
-      console.log(error)
   };
 
   return (
@@ -57,12 +55,14 @@ export default function Login () {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LoginIcon/>
+            <ModeEditOutlineIcon/>
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Register
           </Typography>
-          {error && <Alert severity="error">Wrong email or password!</Alert>}
+          {error && <Alert severity="error">{errorMsg}</Alert>}
+          {success && <Alert severity="success">Successfully Created Account, Redirecting</Alert>}
+          {redirect && <Navigate to="/" />}
           <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -86,30 +86,14 @@ export default function Login () {
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Sign Up
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link to="/recoverpassword">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link to="/register">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>

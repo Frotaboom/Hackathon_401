@@ -10,8 +10,10 @@ import { useState, useEffect, useContext} from 'react'
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 import { AuthContext } from '../auth/AuthContext';
-
-
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
 
 export default function Home() {
   const { isLoaded } = useLoadScript({
@@ -19,6 +21,8 @@ export default function Home() {
   });
   const [data, setData] = useState({})
   const {currentUser} = useContext(AuthContext)
+  var markers = []
+
   useEffect(() => {
     const unsub = onSnapshot(
       collection(db, "events"),
@@ -41,13 +45,43 @@ export default function Home() {
   }, []);
 
 
+
+  const fetchLatLong = async (address) => {
+    console.log('Making a query to google maps')
+    const results = await getGeocode({ address });
+    const { lat, lng } = await getLatLng(results[0])
+    return { lat, lng }
+  };
+
+
+  useEffect(()=>{
+    var n = data.length
+    if (n !== undefined || n > 0){
+      var locations = new Set()
+      for (var element of data){
+        if (element.title!==undefined){
+          locations.add(element.title)
+        }
+      }
+    }
+
+    if (locations !== undefined){
+      for (let location of locations){
+        fetchLatLong(location).then((PromiseResult)=>{
+          markers.push(PromiseResult)
+        })
+      }
+    }
+    
+  })
+
   return (
     <div>
       <div className="home">
           <Topbar/>
       </div>
-      {isLoaded && <Map/>}
-      <Grid container spacing={3} rowSpacing = {3}>
+      {isLoaded && <Map markers={markers}/>}
+      <Grid container spacing={2} rowSpacing = {2}>
         <Grid item xs={6}>
           <LocationPicker setData = {setData}/>
         </Grid>
@@ -62,15 +96,12 @@ export default function Home() {
   
 }
 
-function Map() {
-  const center = useMemo(() => ({ lat: 53.5232, lng: -113.5263 }), []);
-
+function Map({markers}) {
+  const center = { lat: 53.5232, lng: -113.5263 }
+  console.log(markers[0])
   return (
-    <div id = "map">
-      
-      <GoogleMap zoom={15} center={center} mapContainerClassName="map-container">
-        <Marker position={center} />
-      </GoogleMap>
-    </div>
+    <GoogleMap zoom={15} center={center} mapContainerClassName="map-container">
+      {markers.length>0 && <Marker position={center} />}
+    </GoogleMap>
   );
 }

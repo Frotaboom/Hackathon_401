@@ -17,7 +17,7 @@ import { db } from "../../firebase";
 import { AuthContext } from "../../auth/AuthContext";
 
 export default function LocationPicker( setData ) {
-  const [state,setState] = useState({title:'ECHA', startTime:'08:00', endTime:'08:00'})
+  const [state,setState] = useState({title:'Engineering Teaching and Learning Complex (ETLC) University of Alberta Edmonton, Alberta, Canada T6G 2V4', startTime:'08:00', endTime:'08:00'})
   const [checkboxState,setCheckBoxState] = useState({1:0, 2:0, 3:0, 4:0, 5:0})
   const {currentUser} = useContext(AuthContext);
 
@@ -40,7 +40,6 @@ export default function LocationPicker( setData ) {
   const handleSubmit = async(event) => {
     event.preventDefault();
     state.user = currentUser
-    console.log({...state, ...checkboxState})
     //setData({...state, ...checkboxState});
     await addDoc(collection(db,"events"),{...state, ...checkboxState});
   };
@@ -60,7 +59,7 @@ export default function LocationPicker( setData ) {
                 inputProps={{name: 'title'}}
                 onChange = {handleChange}
               >
-                <option value={"ETLC"}>ETLC</option>
+                <option value={"Engineering Teaching and Learning Complex (ETLC)"}>ETLC</option>
                 <option value={"CCIS"}>CCIS</option>
                 <option value={"Education"}>Education</option>
                 <option value={"SUB"}>SUB</option>

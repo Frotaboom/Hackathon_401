@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import {GoogleMap, useLoadScript, Marker} from '@react-google-maps/api'
 import './home.css'
 import LocationPicker from '../components/locationpicker/locationpicker'
+import Calendar from '../components/calendar/calendar'
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 export default function Home() {
@@ -20,7 +21,8 @@ export default function Home() {
           <LocationPicker/>
         </Grid>
         <Divider orientation="vertical" flexItem />
-        <Grid item xs={6}>
+        <Grid item xs={5.9}>
+          <Calendar/>
         </Grid>
       </Grid>
       

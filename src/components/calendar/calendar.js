@@ -52,6 +52,7 @@ const Calendar = ({data}) => {
     return <div id = "calendar" className = 'calendar'>
         <Scheduler
             data = {state.appointments}
+            height = {'auto'}
         >
             <ViewState currentDate = {correctSunday}/>
             <EditingState onCommitChanges = {commitChanges}/>

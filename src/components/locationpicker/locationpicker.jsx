@@ -1,11 +1,7 @@
 import React from 'react'
+import { useState, useContext } from "react";
 import './locationpicker.css'
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -15,11 +11,38 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
-import Stack from '@mui/material/Stack';
+import {collection, addDoc} from "firebase/firestore"
+import { db } from "../../firebase";
+import { AuthContext } from "../../auth/AuthContext";
 
-export default function locationpicker() {
+export default function LocationPicker() {
+  const [state,setState] = useState({})
+  const [checkboxState,setCheckBoxState] = useState({1:0, 2:0, 3:0, 4:0, 5:0})
+  const {currentUser} = useContext(AuthContext);
+
+  const handleChange = ({ target }) => {
+    const {name, value} = target;
+    setState((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleCheckBoxChange = ({target}) => {  
+    const {name} = target;
+    setCheckBoxState((prevState) => ({
+      ...prevState,
+      [name]: 1 - prevState[name]
+    }))
+  }
+
+  const handleSubmit = async(event) => {
+    event.preventDefault();
+    state.user = currentUser
+    await addDoc(collection(db,"events"),{...state, ...checkboxState});
+  };
+
   return (
     <div>
       <Grid container spacing={6} justifyContent="center" alignItems="center">
@@ -29,42 +52,17 @@ export default function locationpicker() {
         <Grid item xs={12}>
           <FormControl fullWidth>
               <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                End Time
+                Building
               </InputLabel>
               <NativeSelect
-                defaultValue={30}
-                inputProps={{
-                  name: 'end',
-                  id: 'uncontrolled-native',
-                }}
+                inputProps={{name: 'title'}}
+                onChange = {handleChange}
               >
-                <option value={8.5}>8:00 AM</option>
-                <option value={8.5}>8:30 AM</option>
-                <option value={8.5}>9:00 AM</option>
-                <option value={8.5}>9:30 AM</option>
-                <option value={8.5}>10:00 AM</option>
-                <option value={8.5}>10:30 AM</option>
-                <option value={8.5}>11:00 AM</option>
-                <option value={8.5}>11:30 AM</option>
-                <option value={8.5}>12:00 PM</option>
-                <option value={8.5}>12:30 PM</option>
-                <option value={8.5}>1:00 PM</option>
-                <option value={8.5}>1:30 PM</option>
-                <option value={8.5}>2:00 PM</option>
-                <option value={8.5}>2:30 PM</option>
-                <option value={8.5}>3:00 PM</option>
-                <option value={8.5}>3:30 PM</option>
-                <option value={8.5}>4:00 PM</option>
-                <option value={8.5}>4:30 PM</option>
-                <option value={8.5}>5:00 PM</option>
-                <option value={8.5}>5:30 PM</option>
-                <option value={8.5}>6:00 PM</option>
-                <option value={8.5}>6:30 PM</option>
-                <option value={8.5}>7:00 PM</option>
-                <option value={8.5}>7:30 PM</option>
-                <option value={8.5}>8:00 PM</option>
-                <option value={8.5}>8:30 PM</option>
-                <option value={8.5}>9:00 PM</option>
+                <option value={"ETLC"}>ETLC</option>
+                <option value={"CCIS"}>CCIS</option>
+                <option value={"Education"}>Education</option>
+                <option value={"SUB"}>SUB</option>
+                <option value={"Tory Lecture"}>Tory Lecture</option>
               </NativeSelect>
             </FormControl>
         </Grid>
@@ -75,34 +73,28 @@ export default function locationpicker() {
               <InputLabel variant="standard" htmlFor="uncontrolled-native">
                 Start Time
               </InputLabel>
-              <NativeSelect
-                defaultValue={30}
-                inputProps={{
-                  name: 'start',
-                  id: 'uncontrolled-native',
-                }}
-              >
-                <option value={8.5}>8:00 AM</option>
-                <option value={8.5}>8:30 AM</option>
-                <option value={8.5}>9:00 AM</option>
-                <option value={8.5}>9:30 AM</option>
-                <option value={8.5}>10:00 AM</option>
-                <option value={8.5}>10:30 AM</option>
-                <option value={8.5}>11:00 AM</option>
-                <option value={8.5}>11:30 AM</option>
-                <option value={8.5}>12:00 PM</option>
-                <option value={8.5}>12:30 PM</option>
-                <option value={8.5}>1:00 PM</option>
-                <option value={8.5}>1:30 PM</option>
-                <option value={8.5}>2:00 PM</option>
-                <option value={8.5}>2:30 PM</option>
-                <option value={8.5}>3:00 PM</option>
-                <option value={8.5}>3:30 PM</option>
-                <option value={8.5}>4:00 PM</option>
-                <option value={8.5}>4:30 PM</option>
-                <option value={8.5}>5:00 PM</option>
-                <option value={8.5}>5:30 PM</option>
-                <option value={8.5}>6:00 PM</option>
+              <NativeSelect onChange = {handleChange} inputProps={{name: 'startTime'}}>
+                <option value={"08:00"}>8:00 AM</option>
+                <option value={"08:30"}>8:30 AM</option>
+                <option value={"09:00"}>9:00 AM</option>
+                <option value={"09:30"}>9:30 AM</option>
+                <option value={"10:00"}>10:00 AM</option>
+                <option value={"10:30"}>10:30 AM</option>
+                <option value={"11:00"}>11:00 AM</option>
+                <option value={"11:30"}>11:30 AM</option>
+                <option value={"12:00"}>12:00 PM</option>
+                <option value={"12:30"}>12:30 PM</option>
+                <option value={"13:00"}>1:00 PM</option>
+                <option value={"13:30"}>1:30 PM</option>
+                <option value={"14:00"}>2:00 PM</option>
+                <option value={"14:30"}>2:30 PM</option>
+                <option value={"15:00"}>3:00 PM</option>
+                <option value={"15:30"}>3:30 PM</option>
+                <option value={"16:00"}>4:00 PM</option>
+                <option value={"16:30"}>4:30 PM</option>
+                <option value={"17:00"}>5:00 PM</option>
+                <option value={"17:30"}>5:30 PM</option>
+                <option value={"18:00"}>6:00 PM</option>
               </NativeSelect>
             </FormControl>
           </Box>
@@ -113,40 +105,34 @@ export default function locationpicker() {
               <InputLabel variant="standard" htmlFor="uncontrolled-native">
                 End Time
               </InputLabel>
-              <NativeSelect
-                defaultValue={30}
-                inputProps={{
-                  name: 'end',
-                  id: 'uncontrolled-native',
-                }}
-              >
-                <option value={8.5}>8:00 AM</option>
-                <option value={8.5}>8:30 AM</option>
-                <option value={8.5}>9:00 AM</option>
-                <option value={8.5}>9:30 AM</option>
-                <option value={8.5}>10:00 AM</option>
-                <option value={8.5}>10:30 AM</option>
-                <option value={8.5}>11:00 AM</option>
-                <option value={8.5}>11:30 AM</option>
-                <option value={8.5}>12:00 PM</option>
-                <option value={8.5}>12:30 PM</option>
-                <option value={8.5}>1:00 PM</option>
-                <option value={8.5}>1:30 PM</option>
-                <option value={8.5}>2:00 PM</option>
-                <option value={8.5}>2:30 PM</option>
-                <option value={8.5}>3:00 PM</option>
-                <option value={8.5}>3:30 PM</option>
-                <option value={8.5}>4:00 PM</option>
-                <option value={8.5}>4:30 PM</option>
-                <option value={8.5}>5:00 PM</option>
-                <option value={8.5}>5:30 PM</option>
-                <option value={8.5}>6:00 PM</option>
-                <option value={8.5}>6:30 PM</option>
-                <option value={8.5}>7:00 PM</option>
-                <option value={8.5}>7:30 PM</option>
-                <option value={8.5}>8:00 PM</option>
-                <option value={8.5}>8:30 PM</option>
-                <option value={8.5}>9:00 PM</option>
+              <NativeSelect onChange = {handleChange} inputProps={{name: 'endTime'}}>
+                <option value={"08:00"}>8:00 AM</option>
+                <option value={"08:30"}>8:30 AM</option>
+                <option value={"09:00"}>9:00 AM</option>
+                <option value={"09:30"}>9:30 AM</option>
+                <option value={"10:00"}>10:00 AM</option>
+                <option value={"10:30"}>10:30 AM</option>
+                <option value={"11:00"}>11:00 AM</option>
+                <option value={"11:30"}>11:30 AM</option>
+                <option value={"12:00"}>12:00 PM</option>
+                <option value={"12:30"}>12:30 PM</option>
+                <option value={"13:00"}>1:00 PM</option>
+                <option value={"13:30"}>1:30 PM</option>
+                <option value={"14:00"}>2:00 PM</option>
+                <option value={"14:30"}>2:30 PM</option>
+                <option value={"15:00"}>3:00 PM</option>
+                <option value={"15:30"}>3:30 PM</option>
+                <option value={"16:00"}>4:00 PM</option>
+                <option value={"16:30"}>4:30 PM</option>
+                <option value={"17:00"}>5:00 PM</option>
+                <option value={"17:30"}>5:30 PM</option>
+                <option value={"18:00"}>6:00 PM</option>
+                <option value={"18:30"}>6:30 PM</option>
+                <option value={"19:00"}>7:00 PM</option>
+                <option value={"19:30"}>7:30 PM</option>
+                <option value={"20:00"}>8:00 PM</option>
+                <option value={"20:30"}>8:30 PM</option>
+                <option value={"21:00"}>9:00 PM</option>
               </NativeSelect>
             </FormControl>
           </Box>
@@ -156,36 +142,41 @@ export default function locationpicker() {
             <FormLabel component="legend">Days</FormLabel>
             <FormGroup aria-label="position" row>
               <FormControlLabel
-                value="1"
+                name="1"
                 control={<Checkbox />}
                 label="M"
                 labelPlacement="bottom"
+                onChange = {handleCheckBoxChange}
               />
               <FormControlLabel
-                value = "2" 
+                name = "2" 
                 control={<Checkbox />}
                 label="T"
                 labelPlacement="bottom"
+                onChange = {handleCheckBoxChange}
               />
               <FormControlLabel
-                value="3"
+                name="3"
                 control={<Checkbox />}
                 label="W"
                 labelPlacement="bottom"
+                onChange = {handleCheckBoxChange}
               />
               <FormControlLabel
-                value="4"
+                name="4"
                 control={<Checkbox />}
                 label="R"
                 labelPlacement="bottom"
+                onChange = {handleCheckBoxChange}
               />
               <FormControlLabel
-                value="5"
+                name="5"
                 control={<Checkbox />}
                 label="F"
                 labelPlacement="bottom"
+                onChange = {handleCheckBoxChange}
               />
-              <Button variant="contained" endIcon={<SendIcon />}>
+              <Button variant="contained" onClick={handleSubmit} endIcon={<SendIcon />}>
                 Submit
               </Button>
             </FormGroup>

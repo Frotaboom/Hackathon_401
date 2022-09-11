@@ -40,8 +40,8 @@ export default function Login () {
       })
       .catch((error) => {
         setError(true);
+        console.log(error)
       });
-      console.log(error)
   };
 
   return (

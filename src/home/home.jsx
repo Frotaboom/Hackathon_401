@@ -4,9 +4,6 @@ import {GoogleMap, useLoadScript, Marker} from '@react-google-maps/api'
 import './home.css'
 import LocationPicker from '../components/locationpicker/locationpicker'
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 export default function Home() {
   const { isLoaded } = useLoadScript({

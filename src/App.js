@@ -11,14 +11,13 @@ import Register from './register/register';
 function App() {
   const {currentUser} = useContext(AuthContext);
   const RequireAuth = ({ children }) => {
-    console.log(currentUser)
     return currentUser ? children : <Navigate to="/login" />;
   };
   return (
     <Router>
         <Routes>
           <Route path="/login" element={<Login/>} />
-          <Route path="/" element={<Home/>}/>
+          <Route path="/" element={<RequireAuth><Home/></RequireAuth>}/>
           <Route path="/register" element = {<Register/>} />
         </Routes>
     </Router>

@@ -22,9 +22,47 @@
     cursor: pointer;
   }
   
+  .desc {
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(30, 30, 30);
+    cursor: pointer;
+    align-items: center;
+  }
+  
   .topRight{
       display: flex;
       align-items: center;
+  }
+  
+  .topLeft{
+      display: flex;
+      align-items: left;
+      width: 110%;
+  }
+
+  .timeForm{
+    width: 50%;
+    height: 120%;
+    position: relative;
+  }
+
+  .sendButton{
+    width: 90%;
+    height: 100%;
+    position: relative;
+  }
+
+  .spacer{
+    width: 40%;
+    height: 100%;
+    position: relative;
+  }
+  
+  .miniSpacer{
+    width: 10%;
+    height: 100%;
+    position: relative;
   }
   
   .topbarIconContainer {

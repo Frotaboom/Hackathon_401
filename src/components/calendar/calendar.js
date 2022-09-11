@@ -44,7 +44,6 @@ const Calendar = ({data}) => {
           let currentAppointments = state.appointments;
           if (deleted !== undefined) {
             deleteDoc(doc(db, "events", deleted.split("_")[0]))
-            console.log("hello")
           }
           return { currentAppointments };
         });

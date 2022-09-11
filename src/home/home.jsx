@@ -10,6 +10,9 @@ import { useState, useEffect, useContext} from 'react'
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 import { AuthContext } from '../auth/AuthContext';
+
+
+
 export default function Home() {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyBXMPE83Uf0uTU7vN-JxjiiSgJO7H5hKP4",
@@ -44,7 +47,7 @@ export default function Home() {
           <Topbar/>
       </div>
       {isLoaded && <Map/>}
-      <Grid container spacing={2} rowSpacing = {2}>
+      <Grid container spacing={3} rowSpacing = {3}>
         <Grid item xs={6}>
           <LocationPicker setData = {setData}/>
         </Grid>
@@ -63,8 +66,11 @@ function Map() {
   const center = useMemo(() => ({ lat: 53.5232, lng: -113.5263 }), []);
 
   return (
-    <GoogleMap zoom={15} center={center} mapContainerClassName="map-container">
-      <Marker position={center} />
-    </GoogleMap>
+    <div id = "map">
+      
+      <GoogleMap zoom={15} center={center} mapContainerClassName="map-container">
+        <Marker position={center} />
+      </GoogleMap>
+    </div>
   );
 }

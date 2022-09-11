@@ -1,17 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
-import { Scheduler, WeekView, Appointments, AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
+import { Scheduler, WeekView, Appointments, AppointmentTooltip, AppointmentForm } from '@devexpress/dx-react-scheduler-material-ui'
 
-{/*}
-const data1 = [
-    { title: 'CSIS', days: [1,0,1,0,1], startTime: '10:00', endTime: '11:00'},
-    { title: 'SUB', days: [1,0,1,0,1], startTime: '11:00', endTime: '12:00'},
-    { title: 'ED', days: [1,0,1,0,1], startTime: '14:00', endTime: '15:00'},
-    { title: 'CSC', days: [0,1,0,1,0], startTime: '13:00', endTime: '14:30'},
-    { title: 'ETLC', days: [0,1,0,1,0], startTime: '08:00', endTime: '09:30'},
-];
-*/}
+import { db } from '../../firebase';
+import { doc, deleteDoc} from "firebase/firestore"
+
 
 var correctSunday = new Date();
 if (correctSunday.getDay() !== 6) {
@@ -29,10 +23,10 @@ function assembleAppointments(data) {
             if (appointment[j+1] === 0) { continue }
 
             var day = new Date();
-            day.setDate(correctSunday.getDate()+j);
+            day.setDate(correctSunday.getDate()+j+1);
             var startDayStr = day.toISOString().split('T')[0] + "T" + appointment.startTime + ":00";
             var endDayStr = day.toISOString().split('T')[0] + "T" + appointment.endTime + ":00";
-            appointments.push({theId: appointment.id, title: appointment.title, startDate: startDayStr, endDate: endDayStr});
+            appointments.push({id: appointment.id.toString() + "_" + j.toString(), title: appointment.title, startDate: startDayStr, endDate: endDayStr});
         }
     }
 
@@ -48,30 +42,13 @@ const Calendar = ({data}) => {
     const commitChanges = ({ added, changed, deleted }) => {
         setState((state) => {
           let currentAppointments = state.appointments;
-          console.log(added, changed, deleted, currentAppointments)
-          if (added) {
-            const startingAddedId = currentAppointments.length > 0 ? currentAppointments[currentAppointments.length - 1].id + 1 : 0;
-            currentAppointments = [...currentAppointments, { id: startingAddedId, ...added }];
-          }
-          if (changed) {
-            currentAppointments = currentAppointments.map(appointment => (
-              changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-          }
           if (deleted !== undefined) {
-            currentAppointments = currentAppointments.filter(appointment => appointment.id !== deleted);
+            deleteDoc(doc(db, "events", deleted.split("_")[0]))
+            console.log("hello")
           }
           return { currentAppointments };
         });
     }
-
-    {/*}
-    const handleDelete = async() => {
-        setRows(rows.filter((row) => !(JSON.stringify(selected).includes(JSON.stringify(row.id)))))
-        for (let i =0; i<selected.length; i++){
-            await deleteDoc(doc(db, "events", selected[i]));
-        }
-    }
-    */}
     
     return <div id = "calendar">
         <Scheduler
@@ -83,6 +60,7 @@ const Calendar = ({data}) => {
             <WeekView startDayHour={8} endDayHour={21} excludedDays={[0,6]} onDoubleClick={undefined}/>
             <Appointments />
             <AppointmentTooltip showDeleteButton = {true}/>
+            <AppointmentForm />
         </Scheduler>
     </div>;
 }

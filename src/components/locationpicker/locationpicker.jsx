@@ -17,7 +17,7 @@ import { db } from "../../firebase";
 import { AuthContext } from "../../auth/AuthContext";
 
 export default function LocationPicker() {
-  const [state,setState] = useState({})
+  const [state,setState] = useState({building:'ECHA', startTime:'08:00', endTime:'08:00'})
   const [checkboxState,setCheckBoxState] = useState({1:0, 2:0, 3:0, 4:0, 5:0})
   const {currentUser} = useContext(AuthContext);
 
@@ -40,6 +40,7 @@ export default function LocationPicker() {
   const handleSubmit = async(event) => {
     event.preventDefault();
     state.user = currentUser
+    console.log({...state, ...checkboxState})
     await addDoc(collection(db,"events"),{...state, ...checkboxState});
   };
 

@@ -1,6 +1,10 @@
 import * as React from 'react';
+import { useState, useEffect, useContext} from 'react'
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import { Scheduler, WeekView, Appointments, AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
+import { onSnapshot, collection } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { AuthContext } from '../../auth/AuthContext';
 
 const data1 = [
     { title: 'CSIS', days: [1,0,1,0,1], startTime: '10:00', endTime: '11:00'},
@@ -17,13 +21,13 @@ if (correctSunday.getDay() !== 6) {
     correctSunday.setDate(correctSunday.getDate()+1);
 };
 
-function assembleAppointments() {
+function assembleAppointments(data) {
     var appointments = [];
 
-    for (let i = 0; i < data1.length; i++) {
-        var appointment = data1[i];
-        for (let j = 0; j < appointment.days.length; j++) {
-            if (appointment.days[j] == 0) { continue }
+    for (let i = 0; i < data.length; i++) {
+        var appointment = data[i];
+        for (let j = 0; j < 5; j++) {
+            if (appointment[j+1] == 0) { continue }
 
             var day = new Date();
             day.setDate(correctSunday.getDate()+j);
@@ -36,11 +40,35 @@ function assembleAppointments() {
     return appointments;
 }
 
-
-
-
 const Calendar = () => {
-    const appointments = assembleAppointments();
+    
+    const [data, setData] = useState({})
+    const {currentUser} = useContext(AuthContext)
+
+    useEffect(() => {
+        const unsub = onSnapshot(
+          collection(db, "events"),
+          (snapShot) => {
+            let list = [];
+            snapShot.docs.forEach((doc) => {
+              list.push({ id: doc.id, ...doc.data() });
+            });
+            list = list.filter((x) => JSON.stringify(x.user.email) === JSON.stringify(currentUser.email) )
+            setData(list);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+
+        return () => {
+          unsub();
+        };
+      }, []);
+
+    console.log(data)
+
+    const appointments = assembleAppointments(data);
 
     const commitChanges = ({added, changed, deleted}) => {
         deletedButtonPressed()
@@ -53,7 +81,6 @@ const Calendar = () => {
     return <div id = "calendar">
         <Scheduler
             data = {appointments}
-            height = {400}
         >
             <ViewState currentDate = {correctSunday}/>
             <EditingState onCommitChanges = {commitChanges}/>

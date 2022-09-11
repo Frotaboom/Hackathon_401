@@ -16,7 +16,7 @@ export default function Home() {
           <Topbar/>
       </div>
       {isLoaded && <Map/>}
-      <Grid container spacing={2}>
+      <Grid container spacing={2} rowSpacing = {2}>
         <Grid item xs={6}>
           <LocationPicker/>
         </Grid>

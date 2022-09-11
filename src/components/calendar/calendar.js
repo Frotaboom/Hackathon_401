@@ -40,34 +40,7 @@ function assembleAppointments(data) {
     return appointments;
 }
 
-const Calendar = () => {
-    
-    const [data, setData] = useState({})
-    const {currentUser} = useContext(AuthContext)
-
-    useEffect(() => {
-        const unsub = onSnapshot(
-          collection(db, "events"),
-          (snapShot) => {
-            let list = [];
-            snapShot.docs.forEach((doc) => {
-              list.push({ id: doc.id, ...doc.data() });
-            });
-            list = list.filter((x) => JSON.stringify(x.user.email) === JSON.stringify(currentUser.email) )
-            setData(list);
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-
-        return () => {
-          unsub();
-        };
-      }, []);
-
-    console.log(data)
-
+const Calendar = ({data}) => {
     const appointments = assembleAppointments(data);
 
     const commitChanges = ({added, changed, deleted}) => {

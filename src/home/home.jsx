@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import {GoogleMap, useLoadScript, Marker} from '@react-google-maps/api'
 import './home.css'
 import LocationPicker from '../components/locationpicker/locationpicker'
+import Calendar from '../components/calendar/calendar'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -21,6 +22,9 @@ export default function Home() {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <LocationPicker/>
+        </Grid>
+        <Grid item xs={6}>
+          <Calendar/>
         </Grid>
         <Divider orientation="vertical" flexItem />
         <Grid item xs={6}>

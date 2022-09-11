@@ -3,11 +3,11 @@ import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react
 import { Scheduler, WeekView, Appointments, AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
 
 const data1 = [
-    { title: 'CSIS', days: [1,3,5], startTime: '10:00', endTime: '11:00'},
-    { title: 'SUB', days: [1,3,5], startTime: '11:00', endTime: '12:00'},
-    { title: 'ED', days: [1,3,5], startTime: '14:00', endTime: '15:00'},
-    { title: 'CSC', days: [2,4], startTime: '13:00', endTime: '14:30'},
-    { title: 'ETLC', days: [2,4], startTime: '08:00', endTime: '09:30'},
+    { title: 'CSIS', days: [1,0,1,0,1], startTime: '10:00', endTime: '11:00'},
+    { title: 'SUB', days: [1,0,1,0,1], startTime: '11:00', endTime: '12:00'},
+    { title: 'ED', days: [1,0,1,0,1], startTime: '14:00', endTime: '15:00'},
+    { title: 'CSC', days: [0,1,0,1,0], startTime: '13:00', endTime: '14:30'},
+    { title: 'ETLC', days: [0,1,0,1,0], startTime: '08:00', endTime: '09:30'},
 ];
 
 var correctSunday = new Date();
@@ -23,13 +23,12 @@ function assembleAppointments() {
     for (let i = 0; i < data1.length; i++) {
         var appointment = data1[i];
         for (let j = 0; j < appointment.days.length; j++) {
-            var dayInt = appointment.days[j];
-
+            if (appointment.days[j] == 0) { continue }
+            
             var day = new Date();
-            day.setDate(correctSunday.getDate()+dayInt-1);
+            day.setDate(correctSunday.getDate()+j);
             var startDayStr = day.toISOString().split('T')[0] + "T" + appointment.startTime + ":00";
             var endDayStr = day.toISOString().split('T')[0] + "T" + appointment.endTime + ":00";
-            
             appointments.push({title: appointment.title, startDate: startDayStr, endDate: endDayStr});
         }
     }

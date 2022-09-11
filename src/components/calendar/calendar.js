@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect, useContext} from 'react'
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import { Scheduler, WeekView, Appointments, AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
-import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { AuthContext } from '../../auth/AuthContext';
 
 const data1 = [
     { title: 'CSIS', days: [1,0,1,0,1], startTime: '10:00', endTime: '11:00'},
@@ -27,7 +23,7 @@ function assembleAppointments(data) {
     for (let i = 0; i < data.length; i++) {
         var appointment = data[i];
         for (let j = 0; j < 5; j++) {
-            if (appointment[j+1] == 0) { continue }
+            if (appointment[j+1] === 0) { continue }
 
             var day = new Date();
             day.setDate(correctSunday.getDate()+j);

@@ -46,7 +46,7 @@ export default function Home() {
       {isLoaded && <Map/>}
       <Grid container spacing={2} rowSpacing = {2}>
         <Grid item xs={6}>
-          <LocationPicker/>
+          <LocationPicker setData = {setData}/>
         </Grid>
         <Divider orientation="vertical" flexItem />
         <Grid item xs={5.9}>

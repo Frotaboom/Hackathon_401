@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import { Scheduler, WeekView, Appointments, AppointmentTooltip, AppointmentForm } from '@devexpress/dx-react-scheduler-material-ui'
-
+import './calendar.css'
 import { db } from '../../firebase';
 import { doc, deleteDoc} from "firebase/firestore"
 
@@ -50,7 +50,7 @@ const Calendar = ({data}) => {
         });
     }
     
-    return <div id = "calendar">
+    return <div id = "calendar" className = 'calendar'>
         <Scheduler
             data = {state.appointments}
         >

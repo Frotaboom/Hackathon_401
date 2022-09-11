@@ -24,7 +24,7 @@ function assembleAppointments() {
         var appointment = data1[i];
         for (let j = 0; j < appointment.days.length; j++) {
             if (appointment.days[j] == 0) { continue }
-            
+
             var day = new Date();
             day.setDate(correctSunday.getDate()+j);
             var startDayStr = day.toISOString().split('T')[0] + "T" + appointment.startTime + ":00";
@@ -53,6 +53,7 @@ const Calendar = () => {
     return <div id = "calendar">
         <Scheduler
             data = {appointments}
+            height = {400}
         >
             <ViewState currentDate = {correctSunday}/>
             <EditingState onCommitChanges = {commitChanges}/>

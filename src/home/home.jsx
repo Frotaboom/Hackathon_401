@@ -23,11 +23,9 @@ export default function Home() {
         <Grid item xs={6}>
           <LocationPicker/>
         </Grid>
-        <Grid item xs={6}>
-          <Calendar/>
-        </Grid>
         <Divider orientation="vertical" flexItem />
-        <Grid item xs={6}>
+        <Grid item xs={5.9}>
+          <Calendar/>
         </Grid>
       </Grid>
       
